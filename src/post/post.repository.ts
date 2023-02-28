@@ -44,6 +44,7 @@ export class PostRepository {
         .limit(_limit)
         .populate('author', '', this.userModel)
         .populate('comments.author', '', this.userModel)
+        .populate('pinned.author', '', this.userModel)
         .exec();
     else if (_limit > 0 && _page > 1)
       return await this.postModel
@@ -52,12 +53,14 @@ export class PostRepository {
         .limit(_limit)
         .populate('author', '', this.userModel)
         .populate('comments.author', '', this.userModel)
+        .populate('pinned.author', '', this.userModel)
         .exec();
     else
       return await this.postModel
         .find()
         .populate('author', '', this.userModel)
         .populate('comments.author', '', this.userModel)
+        .populate('pinned.author', '', this.userModel)
         .exec();
   }
 
@@ -106,6 +109,41 @@ export class PostRepository {
         },
       },
     );
+  }
+
+  async togglePin(postId: string, userId: string) {
+    const post: any = await this.postModel
+      .findOne({ postId })
+      .populate('author', '', this.userModel)
+      .exec();
+
+    if (!post.pinned && post.author.userId === userId) {
+      await this.postModel.find({ pinned: true }).updateMany({
+        $set: {
+          pinned: false,
+        },
+      });
+
+      return this.postModel.findOneAndUpdate(
+        { postId },
+        {
+          $set: {
+            pinned: true,
+          },
+        },
+      );
+    } else if (post.pinned && post.author.userId === userId) {
+      return this.postModel.findOneAndUpdate(
+        { postId },
+        {
+          $set: {
+            pinned: false,
+          },
+        },
+        { new: true },
+      );
+    }
+    return post;
   }
 
   async removeLike(postId: string, likeId: string) {

@@ -12,7 +12,7 @@ import { UserService } from './user.service';
 import { User } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { ChangeUserDataDto } from '@user/dto/change-userdata.dto';
 
 @Controller('users')
 export class UserController {
@@ -34,13 +34,16 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch('me')
-  async update(@Request() req, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(req.user.id, updateUserDto);
+  @Patch(':id')
+  async changeUserData(
+    @Param('id') userId: string,
+    @Body() { data }: { data: ChangeUserDataDto },
+  ) {
+    return this.userService.changeUserData(userId, data);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch(':id')
+  @Patch(':id/avatar')
   async updateAvatar(
     @Request() req,
     @Body() { avatarUrl }: { avatarUrl: string },

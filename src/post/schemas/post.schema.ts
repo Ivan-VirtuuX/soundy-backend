@@ -34,6 +34,9 @@ export class Post {
 
   @Prop()
   updatedAt?: Date;
+
+  @Prop()
+  pinned: false;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

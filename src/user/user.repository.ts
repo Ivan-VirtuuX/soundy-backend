@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { LoginUserDto } from './dto/login-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { ChangeUserDataDto } from './dto/change-userdata.dto';
 import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
@@ -14,10 +14,6 @@ export class UserRepository {
     const userId = await users.find((user) => user.userId === id)?._id;
 
     return this.userModel.findOne(userId);
-  }
-
-  async findUserById(id: string) {
-    return this.userModel.find({ userId: id });
   }
 
   async findAll(): Promise<User[]> {
@@ -34,17 +30,24 @@ export class UserRepository {
     return this.userModel.findOne(cond);
   }
 
-  async findOneAndUpdate(_id: string, dto: UpdateUserDto): Promise<any> {
-    const users = await this.userModel.find();
+  async changeUserData(
+    userId: string,
+    { name, surname, birthDate }: ChangeUserDataDto,
+  ): Promise<ChangeUserDataDto> {
+    await this.userModel
+      .findOneAndUpdate(
+        { userId },
+        {
+          $set: {
+            name,
+            surname,
+            birthDate,
+          },
+        },
+      )
+      .exec();
 
-    return this.userModel.findByIdAndUpdate(
-      users.find((user) => user.userId === _id)._id,
-      dto,
-    );
-  }
-
-  async delete(id: string) {
-    return this.userModel.deleteOne({ id });
+    return { name, surname, birthDate };
   }
 
   async updateAvatar(userId: string, avatarUrl: string) {

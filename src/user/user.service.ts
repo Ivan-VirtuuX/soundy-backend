@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { ChangeUserDataDto } from './dto/change-userdata.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UserRepository } from './user.repository';
 import { User } from './schemas/user.schema';
@@ -37,8 +37,11 @@ export class UserService {
     return await this.repository.findOneBy(cond);
   }
 
-  async update(_id: string, dto: UpdateUserDto): Promise<User> {
-    return await this.repository.findOneAndUpdate(_id, dto);
+  async changeUserData(
+    userId: string,
+    dto: ChangeUserDataDto,
+  ): Promise<ChangeUserDataDto> {
+    return await this.repository.changeUserData(userId, dto);
   }
 
   async updateAvatar(userId: string, avatarUrl: string) {

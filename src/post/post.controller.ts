@@ -75,6 +75,12 @@ export class PostController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Post(':id/pins')
+  togglePin(@Param('id') id: string, @Request() req): Promise<PostSchema> {
+    return this.postService.togglePin(id, req.user);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Delete(':id/likes')
   removeLike(
     @Param('id') postId: string,

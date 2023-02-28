@@ -42,6 +42,7 @@ export class PostService {
       views: [],
       likes: [],
       createdAt: new Date(),
+      pinned: false,
     });
   }
 
@@ -61,6 +62,12 @@ export class PostService {
     const { _id }: any = await this.userService.findById(id);
 
     return await this.repository.addLike(dto, postId, _id);
+  }
+
+  async togglePin(postId: string, { id }) {
+    const { _id, userId }: any = await this.userService.findById(id);
+
+    return await this.repository.togglePin(postId, userId);
   }
 
   async removeLike(postId: string, likeId: string) {
