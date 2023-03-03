@@ -24,6 +24,12 @@ export class PostController {
     return this.postService.findAll(_limit, _page);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('/user')
+  getUserPosts(@Query() { _limit, _page }, @Request() req) {
+    return this.postService.getUserPosts(_limit, _page, req.user);
+  }
+
   @Post('/search')
   searchPosts(@Body() { title }: { title: string }) {
     return this.postService.search(title);

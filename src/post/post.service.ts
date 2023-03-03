@@ -53,6 +53,9 @@ export class PostService {
   async findAll(_limit: number, _page: number): Promise<Post[]> {
     return await this.repository.find(_limit, _page);
   }
+  async getUserPosts(_limit: number, _page: number, { id }): Promise<Post[]> {
+    return await this.repository.getUserPosts(_limit, _page, id);
+  }
 
   async delete(postId: string) {
     return this.repository.delete(postId);

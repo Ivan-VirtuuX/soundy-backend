@@ -63,6 +63,40 @@ export class PostRepository {
         .populate('pinned.author', '', this.userModel)
         .exec();
   }
+  async getUserPosts(
+    _limit?: number,
+    _page?: number,
+    userId?: string,
+  ): Promise<Post[]> {
+    const { _id } = await this.userModel.findOne({
+      userId,
+    });
+
+    if (_limit > 0 && _page == 1)
+      return await this.postModel
+        .find({ author: _id })
+        .limit(_limit)
+        .populate('author', '', this.userModel)
+        .populate('comments.author', '', this.userModel)
+        .populate('pinned.author', '', this.userModel)
+        .exec();
+    else if (_limit > 0 && _page > 1)
+      return await this.postModel
+        .find({ author: _id })
+        .skip(_limit * (_page - 1))
+        .limit(_limit)
+        .populate('author', '', this.userModel)
+        .populate('comments.author', '', this.userModel)
+        .populate('pinned.author', '', this.userModel)
+        .exec();
+    else
+      return await this.postModel
+        .find({ author: _id })
+        .populate('author', '', this.userModel)
+        .populate('comments.author', '', this.userModel)
+        .populate('pinned.author', '', this.userModel)
+        .exec();
+  }
 
   async findComments(postId: string): Promise<any> {
     return await this.commentModel
@@ -131,6 +165,7 @@ export class PostRepository {
             pinned: true,
           },
         },
+        { new: true },
       );
     } else if (post.pinned && post.author.userId === userId) {
       return this.postModel.findOneAndUpdate(
