@@ -24,10 +24,9 @@ export class PostController {
     return this.postService.findAll(_limit, _page);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('/user')
-  getUserPosts(@Query() { _limit, _page }, @Request() req) {
-    return this.postService.getUserPosts(_limit, _page, req.user);
+  getUserPosts(@Query() { _limit, _page, userId }) {
+    return this.postService.getUserPosts(_limit, _page, userId);
   }
 
   @Post('/search')
@@ -46,10 +45,11 @@ export class PostController {
     return this.postService.findAllPostsComments();
   }
 
-  // @Get(':id/comments')
-  // getPostComment(@Param('id') postId: string) {
-  //   return this.postService.getPostComment(postId);
-  // }
+  @UseGuards(JwtAuthGuard)
+  @Get('/pinned')
+  getPinnedPost(@Query() { userId }) {
+    return this.postService.getPinnedPost(userId);
+  }
 
   @Get(':id/comments')
   getPostComments(@Param('id') postId: string) {

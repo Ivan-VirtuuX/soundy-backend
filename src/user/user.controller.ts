@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -40,6 +41,59 @@ export class UserController {
     @Body() { data }: { data: ChangeUserDataDto },
   ) {
     return this.userService.changeUserData(userId, data);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/friend-requests')
+  async addFriendRequests(@Param('id') userId: string, @Request() req) {
+    return this.userService.addFriendRequests(userId, req.user);
+  }
+
+  @Get(':id/friend-requests')
+  async getFriendRequests(@Param('id') userId: string) {
+    return this.userService.getFriendRequests(userId);
+  }
+
+  @Get(':id/friends')
+  async getFriends(@Param('id') userId: string) {
+    return this.userService.getFriends(userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/friend-requests')
+  async confirmFriendRequest(
+    @Param('id') userId: string,
+    @Request() req,
+    @Body() { requestFriendId }: { requestFriendId: string },
+  ) {
+    return this.userService.confirmFriendRequest(
+      userId,
+      req.user,
+      requestFriendId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/friend-requests')
+  async cancelFriendRequest(
+    @Param('id') requestFriendId: string,
+    @Request() req,
+    @Body() { userId }: { userId: string },
+  ) {
+    return this.userService.cancelFriendRequest(
+      requestFriendId,
+      req.user,
+      userId,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/friends')
+  async deleteFriend(
+    @Param('id') userId: string,
+    @Body() { friendId }: { friendId: string },
+  ) {
+    return this.userService.deleteFriend(userId, friendId);
   }
 
   @UseGuards(JwtAuthGuard)

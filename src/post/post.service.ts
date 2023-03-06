@@ -46,6 +46,16 @@ export class PostService {
     });
   }
 
+  async getPinnedPost(userId: string) {
+    const posts = await this.repository.find();
+
+    const userPosts = posts.filter(
+      (post: any) => post.author.userId === userId,
+    );
+
+    return userPosts.filter((post) => post.pinned);
+  }
+
   async postId(postId: string) {
     return await this.repository.delete(postId);
   }
@@ -53,8 +63,12 @@ export class PostService {
   async findAll(_limit: number, _page: number): Promise<Post[]> {
     return await this.repository.find(_limit, _page);
   }
-  async getUserPosts(_limit: number, _page: number, { id }): Promise<Post[]> {
-    return await this.repository.getUserPosts(_limit, _page, id);
+  async getUserPosts(
+    _limit: number,
+    _page: number,
+    userId: string,
+  ): Promise<Post[]> {
+    return await this.repository.getUserPosts(_limit, _page, userId);
   }
 
   async delete(postId: string) {

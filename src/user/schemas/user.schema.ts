@@ -27,6 +27,12 @@ export class User {
   avatarUrl?: string;
 
   @Prop()
+  friends: User[];
+
+  @Prop()
+  friendRequests: User[];
+
+  @Prop()
   password?: string;
 
   @Prop()

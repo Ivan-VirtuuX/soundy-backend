@@ -21,6 +21,8 @@ export class UserService {
       name: dto.name,
       surname: dto.surname,
       birthDate: dto.birthDate,
+      friends: [],
+      friendRequests: [],
       createdAt: new Date(),
     });
   }
@@ -42,6 +44,38 @@ export class UserService {
     dto: ChangeUserDataDto,
   ): Promise<ChangeUserDataDto> {
     return await this.repository.changeUserData(userId, dto);
+  }
+
+  async addFriendRequests(userId: string, { id }) {
+    return await this.repository.addFriendRequests(userId, id);
+  }
+
+  async getFriendRequests(userId: string) {
+    return await this.repository.getFriendRequests(userId);
+  }
+
+  async getFriends(userId: string) {
+    return await this.repository.getFriends(userId);
+  }
+
+  async confirmFriendRequest(userId: string, { id }, requestFriendId: string) {
+    return await this.repository.confirmFriendRequest(
+      userId,
+      id,
+      requestFriendId,
+    );
+  }
+
+  async cancelFriendRequest(requestFriendId: string, { id }, userId: string) {
+    return await this.repository.cancelFriendRequest(
+      requestFriendId,
+      id,
+      userId,
+    );
+  }
+
+  async deleteFriend(userId: string, friendId: string) {
+    return await this.repository.deleteFriend(userId, friendId);
   }
 
   async updateAvatar(userId: string, avatarUrl: string) {

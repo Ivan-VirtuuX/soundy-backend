@@ -219,7 +219,7 @@ export class PostRepository {
     const post = await this.postModel.find({ postId });
 
     return post[0]?.views.length === 0 ||
-      post[0]?.views?.some((user) => user.userId !== userId)
+      !post[0]?.views?.find((user) => user.userId === userId)
       ? await this.postModel.findOneAndUpdate(
           { postId },
           {
