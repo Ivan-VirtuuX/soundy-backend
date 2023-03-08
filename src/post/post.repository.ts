@@ -131,17 +131,25 @@ export class PostRepository {
   async addLike(dto: AddLikeDto, id: string, _id: Types.ObjectId) {
     const likeId = uuidv4();
 
-    return this.postModel.findOneAndUpdate(
-      { postId: id },
-      {
-        $push: {
-          likes: {
-            likeId,
-            postId: id,
-            author: _id,
+    const post = await this.postModel
+      .findOne({ postId: id })
+      .populate('likes', '', this.userModel)
+      .exec();
+
+    return (
+      !post.likes.find((like: any) => like.author._id.equals(_id)) &&
+      this.postModel.findOneAndUpdate(
+        { postId: id },
+        {
+          $push: {
+            likes: {
+              likeId,
+              postId: id,
+              author: _id,
+            },
           },
         },
-      },
+      )
     );
   }
 
@@ -214,17 +222,17 @@ export class PostRepository {
   }
 
   async addView(postId: string, userId: string) {
-    const user = await this.userModel.find({ userId });
+    const user = await this.userModel.findOne({ userId });
 
-    const post = await this.postModel.find({ postId });
+    const post = await this.postModel.findOne({ postId });
 
-    return post[0]?.views.length === 0 ||
-      !post[0]?.views?.find((user) => user.userId === userId)
+    return post.views.length === 0 ||
+      !post.views.find((user) => user.userId === userId)
       ? await this.postModel.findOneAndUpdate(
           { postId },
           {
             $push: {
-              views: user[0],
+              views: user,
             },
           },
         )

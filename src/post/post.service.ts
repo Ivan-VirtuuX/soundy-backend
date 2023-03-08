@@ -82,7 +82,7 @@ export class PostService {
   }
 
   async togglePin(postId: string, { id }) {
-    const { _id, userId }: any = await this.userService.findById(id);
+    const { userId }: any = await this.userService.findById(id);
 
     return await this.repository.togglePin(postId, userId);
   }
@@ -93,10 +93,6 @@ export class PostService {
 
   async getPostComments(postId: string) {
     return this.repository.findComments(postId);
-  }
-
-  async getPostComment(postId: string) {
-    return this.repository.findComment(postId);
   }
 
   async findById(_id: string): Promise<Post> {
