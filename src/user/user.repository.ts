@@ -4,12 +4,13 @@ import { Model, Types } from 'mongoose';
 import { LoginUserDto } from './dto/login-user.dto';
 import { ChangeUserDataDto } from './dto/change-userdata.dto';
 import { User, UserDocument } from './schemas/user.schema';
+import { SearchUserDto } from '@user/dto/search-user.dto';
 
 @Injectable()
 export class UserRepository {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<User> {
     const users = await this.userModel
       .find()
       .populate('friendRequests', '', this.userModel)
@@ -30,6 +31,98 @@ export class UserRepository {
       .find()
       .populate('friendRequests', '', this.userModel)
       .exec();
+  }
+
+  async searchUsers(
+    { _name, _surname, _login, _query }: SearchUserDto,
+    _limit: number,
+    _page: number,
+  ): Promise<User[]> {
+    const capitalize = (word: string) => {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    };
+
+    if (_name && _surname && !_login) {
+      if (_limit > 0 && _page == 1) {
+        return this.userModel
+          .find({
+            name: {
+              $regex: capitalize(_name),
+            },
+            surname: {
+              $regex: capitalize(_surname),
+            },
+          })
+          .limit(_limit);
+      } else if (_limit > 0 && _page > 1) {
+        return this.userModel
+          .find({
+            name: {
+              $regex: capitalize(_name),
+            },
+            surname: {
+              $regex: capitalize(_surname),
+            },
+          })
+          .skip(_limit * (_page - 1))
+          .limit(_limit);
+      } else
+        return this.userModel.find({
+          name: {
+            $regex: capitalize(_name),
+          },
+          surname: {
+            $regex: capitalize(_surname),
+          },
+        });
+    } else if (_query && !_name && !_surname && !_login) {
+      if (_limit > 0 && _page == 1) {
+        return this.userModel
+          .find({
+            $or: [
+              {
+                name: {
+                  $regex: capitalize(_query),
+                },
+              },
+              {
+                surname: {
+                  $regex: capitalize(_query),
+                },
+              },
+              {
+                login: {
+                  $regex: _query.toLowerCase(),
+                },
+              },
+            ],
+          })
+          .limit(_limit);
+      } else if (_limit > 0 && _page > 1) {
+        return this.userModel
+          .find({
+            $or: [
+              {
+                name: {
+                  $regex: capitalize(_query),
+                },
+              },
+              {
+                surname: {
+                  $regex: capitalize(_query),
+                },
+              },
+              {
+                login: {
+                  $regex: _query.toLowerCase(),
+                },
+              },
+            ],
+          })
+          .skip(_limit * (_page - 1))
+          .limit(_limit);
+      }
+    }
   }
 
   async create(user: User): Promise<User> {
@@ -95,7 +188,7 @@ export class UserRepository {
     }
   }
 
-  async getFriendRequests(userId: string) {
+  async getFriendRequests(userId: string): Promise<User[]> {
     const user = await this.userModel
       .findOne({ userId })
       .populate('friendRequests', '', this.userModel)
@@ -104,7 +197,7 @@ export class UserRepository {
     return user.friendRequests;
   }
 
-  async getFriends(userId: string) {
+  async getFriends(userId: string): Promise<User[]> {
     const user = await this.userModel
       .findOne({ userId })
       .populate('friends', '', this.userModel)
@@ -156,8 +249,6 @@ export class UserRepository {
   }
 
   async cancelFriendRequest(requestFriendId, id, userId) {
-    console.log(userId === id);
-
     if (userId === id) {
       const { _id } = await this.userModel.findOne({
         userId,
@@ -199,7 +290,7 @@ export class UserRepository {
     }
   }
 
-  async deleteFriend(userId: string, friendId: string) {
+  async deleteFriend(userId: string, friendId: string): Promise<User> {
     const friend = await this.userModel.findOne({ userId: friendId });
 
     const user = await this.userModel.findOne({ userId });
@@ -223,7 +314,7 @@ export class UserRepository {
     );
   }
 
-  async updateAvatar(userId: string, avatarUrl: string) {
+  async updateAvatar(userId: string, avatarUrl: string): Promise<User> {
     return this.userModel.findOneAndUpdate(
       { userId },
       {

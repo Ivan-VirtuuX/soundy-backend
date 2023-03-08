@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -18,6 +19,17 @@ import { ChangeUserDataDto } from '@user/dto/change-userdata.dto';
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Get('/search')
+  async searchUsers(
+    @Query() { _name, _surname, _login, _query, _limit, _page },
+  ) {
+    return this.userService.searchUsers(
+      { _name, _surname, _login, _query },
+      _limit,
+      _page,
+    );
+  }
 
   @Get(':id')
   async getUser(@Param('id') _id: string): Promise<User> {

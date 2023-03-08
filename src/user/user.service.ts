@@ -6,6 +6,7 @@ import { UserRepository } from './user.repository';
 import { User } from './schemas/user.schema';
 import { v4 as uuidv4 } from 'uuid';
 import mongoose from 'mongoose';
+import { SearchUserDto } from '@user/dto/search-user.dto';
 
 @Injectable()
 export class UserService {
@@ -29,6 +30,10 @@ export class UserService {
 
   async findAll(): Promise<User[]> {
     return await this.repository.findAll();
+  }
+
+  async searchUsers(dto: SearchUserDto, _limit: number, _page: number) {
+    return await this.repository.searchUsers(dto, _limit, _page);
   }
 
   async findById(_id: string): Promise<User> {
