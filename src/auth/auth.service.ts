@@ -16,16 +16,13 @@ export class AuthService {
   async validateUser(login: string, password: string): Promise<User> {
     const users = await this.userService.findAll();
 
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password, salt);
+    const user = users.find((user) => user.login === login);
 
-    const user = await users.find(
-      (user) => user.login === login && bcrypt.compare(user.password, hash),
-    );
-
-    console.log(password, user.password);
-
-    if (user && user.password) {
+    if (
+      user &&
+      user.password &&
+      (await bcrypt.compare(password, user.password))
+    ) {
       const { ...result } = user;
 
       return result;
