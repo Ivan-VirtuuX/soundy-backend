@@ -14,19 +14,13 @@ export class PostRepository {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(Comment.name) private commentModel: Model<CommentDocument>,
   ) {}
-  async findAllPostsComments() {
+  async findAllPostsComments(): Promise<Comment[]> {
     const result: any = await this.postModel
       .find()
       .populate('comments.author', '', this.userModel)
       .exec();
 
     return result.map(({ comments }) => comments).flat();
-  }
-
-  async searchByTitle(title: string) {
-    return this.postModel.find({
-      title: { $regex: title, $options: 'i' },
-    });
   }
 
   async findOne(_id: string): Promise<Post> {
@@ -63,6 +57,46 @@ export class PostRepository {
         .populate('pinned.author', '', this.userModel)
         .exec();
   }
+
+  async searchPosts(
+    _text: string,
+    _limit: number,
+    _page: number,
+  ): Promise<Post[]> {
+    if (_text) {
+      if (_limit > 0 && _page == 1) {
+        return this.postModel
+          .find({
+            'body.data.text': {
+              $regex: _text,
+            },
+          })
+          .limit(_limit)
+          .populate('author', '', this.userModel)
+          .exec();
+      } else if (_limit > 0 && _page > 1) {
+        return this.postModel
+          .find({
+            'body.data.text': {
+              $regex: _text,
+            },
+          })
+          .skip(_limit * (_page - 1))
+          .limit(_limit)
+          .populate('author', '', this.userModel)
+          .exec();
+      } else
+        return this.postModel
+          .find({
+            'body.data.text': {
+              $regex: _text,
+            },
+          })
+          .populate('author', '', this.userModel)
+          .exec();
+    }
+  }
+
   async getUserPosts(
     _limit?: number,
     _page?: number,
@@ -98,22 +132,11 @@ export class PostRepository {
         .exec();
   }
 
-  async findComments(postId: string): Promise<any> {
+  async findComments(postId: string): Promise<Comment[]> {
     return await this.commentModel
       .find({ postId })
       .populate('author', '', this.userModel)
       .exec();
-  }
-
-  async findComment(postId: string): Promise<any> {
-    const comment = await this.commentModel
-      .findOne({ postId })
-      .populate('author', '', this.userModel)
-      .exec();
-
-    const comments = [];
-
-    return [...comments, comment];
   }
 
   async create(post: Post): Promise<Post> {

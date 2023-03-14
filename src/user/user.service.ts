@@ -32,7 +32,11 @@ export class UserService {
     return await this.repository.findAll();
   }
 
-  async searchUsers(dto: SearchUserDto, _limit: number, _page: number) {
+  async searchUsers(
+    dto: SearchUserDto,
+    _limit: number,
+    _page: number,
+  ): Promise<User[]> {
     return await this.repository.searchUsers(dto, _limit, _page);
   }
 
@@ -55,11 +59,11 @@ export class UserService {
     return await this.repository.addFriendRequests(userId, id);
   }
 
-  async getFriendRequests(userId: string) {
+  async getFriendRequests(userId: string): Promise<User[]> {
     return await this.repository.getFriendRequests(userId);
   }
 
-  async getFriends(userId: string) {
+  async getFriends(userId: string): Promise<User[]> {
     return await this.repository.getFriends(userId);
   }
 
@@ -79,11 +83,11 @@ export class UserService {
     );
   }
 
-  async deleteFriend(userId: string, friendId: string) {
+  async deleteFriend(userId: string, friendId: string): Promise<User> {
     return await this.repository.deleteFriend(userId, friendId);
   }
 
-  async updateAvatar(userId: string, avatarUrl: string) {
+  async updateAvatar(userId: string, avatarUrl: string): Promise<User> {
     return await this.repository.updateAvatar(userId, avatarUrl);
   }
 }

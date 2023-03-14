@@ -7,6 +7,7 @@ import { UserService } from '@user/user.service';
 import { User } from '@user/schemas/user.schema';
 import { Types } from 'mongoose';
 import { AddLikeDto } from './dto/add-like.dto';
+import { Comment } from '../comment/schemas/comment.schema';
 
 @Injectable()
 export class PostService {
@@ -19,7 +20,7 @@ export class PostService {
     return await this.repository.removeComment(commentId, postId);
   }
 
-  async findAllPostsComments() {
+  async findAllPostsComments(): Promise<Comment[]> {
     return await this.repository.findAllPostsComments();
   }
 
@@ -46,23 +47,28 @@ export class PostService {
     });
   }
 
-  async getPinnedPost(userId: string) {
+  async getPinnedPost(userId: string): Promise<Post> {
     const posts = await this.repository.find();
 
     const userPosts = posts.filter(
       (post: any) => post.author.userId === userId,
     );
 
-    return userPosts.filter((post) => post.pinned);
-  }
-
-  async postId(postId: string) {
-    return await this.repository.delete(postId);
+    return userPosts.find((post) => post.pinned);
   }
 
   async findAll(_limit: number, _page: number): Promise<Post[]> {
     return await this.repository.find(_limit, _page);
   }
+
+  async searchPosts(
+    _text: string,
+    _limit: number,
+    _page: number,
+  ): Promise<Post[]> {
+    return await this.repository.searchPosts(_text, _limit, _page);
+  }
+
   async getUserPosts(
     _limit: number,
     _page: number,
@@ -97,10 +103,6 @@ export class PostService {
 
   async findById(_id: string): Promise<Post> {
     return await this.repository.findOne(_id);
-  }
-
-  async search(title: string) {
-    return await this.repository.searchByTitle(title);
   }
 
   async addView(postId: string, { id }) {

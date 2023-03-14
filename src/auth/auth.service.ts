@@ -4,6 +4,7 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@user/schemas/user.schema';
 import mongoose from 'mongoose';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -12,17 +13,19 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async getMe(_id: string) {
-    await this.userService.findById(_id);
-  }
-
   async validateUser(login: string, password: string): Promise<User> {
-    const user = await this.userService.findByCond({
-      login,
-      password,
-    });
+    const users = await this.userService.findAll();
 
-    if (user && user.password === password) {
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt);
+
+    const user = await users.find(
+      (user) => user.login === login && bcrypt.compare(user.password, hash),
+    );
+
+    console.log(password, user.password);
+
+    if (user && user.password) {
       const { ...result } = user;
 
       return result;
@@ -50,6 +53,9 @@ export class AuthService {
 
   async register(dto: CreateUserDto) {
     try {
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(dto.password, salt);
+
       const users = await this.userService.findAll();
 
       const { ...userData }: any =
@@ -57,21 +63,30 @@ export class AuthService {
         (await this.userService.create({
           _id: new mongoose.Types.ObjectId(),
           login: dto.login,
-          password: dto.password,
+          password: hash,
           name: dto.name,
           surname: dto.surname,
           birthDate: dto.birthDate,
         }));
 
-      return {
-        id: userData._doc.userId,
-        login: userData._doc.login,
-        token: this.generateJwtToken(userData),
-      };
+      if (
+        !users.find((user) => user.login === dto.login) &&
+        !dto.name.match(/\d+/g)
+      )
+        return {
+          id: userData._doc.userId,
+          login: userData._doc.login,
+          token: this.generateJwtToken(userData),
+        };
+      else if (dto.name.match(/\d+/g)) {
+        return new ForbiddenException('Недопустимые символы в имени');
+      } else if (dto.surname.match(/\d+/g)) {
+        return new ForbiddenException('Недопустимые символы в фамилии');
+      } else {
+        return new ForbiddenException('Логин занят');
+      }
     } catch (err) {
       console.log(err);
-
-      throw new ForbiddenException('Логин занят');
     }
   }
 }

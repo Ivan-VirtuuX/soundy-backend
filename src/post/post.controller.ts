@@ -24,14 +24,14 @@ export class PostController {
     return this.postService.findAll(_limit, _page);
   }
 
+  @Get('/search')
+  async searchPosts(@Query() { _text, _limit, _page }) {
+    return this.postService.searchPosts(_text, _limit, _page);
+  }
+
   @Get('/user')
   getUserPosts(@Query() { _limit, _page, userId }) {
     return this.postService.getUserPosts(_limit, _page, userId);
-  }
-
-  @Post('/search')
-  searchPosts(@Body() { title }: { title: string }) {
-    return this.postService.search(title);
   }
 
   @UseGuards(JwtAuthGuard)

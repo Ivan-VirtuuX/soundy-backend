@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+
 import { Unique } from 'typeorm';
 
 export class CreateUserDto {
