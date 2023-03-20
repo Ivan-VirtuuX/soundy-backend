@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
+import { MusicTrackDto } from '@user/dto/music-track.dto';
 
 export type UserDocument = User & Document;
 
@@ -31,6 +32,9 @@ export class User {
 
   @Prop()
   friendRequests: User[];
+
+  @Prop()
+  playlist: MusicTrackDto[];
 
   @Prop()
   password?: string;

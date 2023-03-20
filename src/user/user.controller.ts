@@ -15,6 +15,7 @@ import { User } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ChangeUserDataDto } from '@user/dto/change-userdata.dto';
+import { MusicTrackDto } from '@user/dto/music-track.dto';
 
 @Controller('users')
 export class UserController {
@@ -23,7 +24,7 @@ export class UserController {
   @Get('/search')
   async searchUsers(
     @Query() { _name, _surname, _login, _query, _limit, _page },
-  ) {
+  ): Promise<User[]> {
     return this.userService.searchUsers(
       { _name, _surname, _login, _query },
       _limit,
@@ -37,7 +38,7 @@ export class UserController {
   }
 
   @Get()
-  async getUsers() {
+  async getUsers(): Promise<User[]> {
     return this.userService.findAll();
   }
 
@@ -62,12 +63,12 @@ export class UserController {
   }
 
   @Get(':id/friend-requests')
-  async getFriendRequests(@Param('id') userId: string) {
+  async getFriendRequests(@Param('id') userId: string): Promise<User[]> {
     return this.userService.getFriendRequests(userId);
   }
 
   @Get(':id/friends')
-  async getFriends(@Param('id') userId: string) {
+  async getFriends(@Param('id') userId: string): Promise<User[]> {
     return this.userService.getFriends(userId);
   }
 
@@ -83,6 +84,22 @@ export class UserController {
       req.user,
       requestFriendId,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id/playlist')
+  async toggleMusicTrack(
+    @Request() req,
+    @Body()
+    {
+      data,
+    }: {
+      data: {
+        musicTrack: MusicTrackDto;
+      };
+    },
+  ) {
+    return this.userService.toggleMusicTrack(data.musicTrack, req.user);
   }
 
   @UseGuards(JwtAuthGuard)

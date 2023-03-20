@@ -5,6 +5,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { ChangeUserDataDto } from './dto/change-userdata.dto';
 import { User, UserDocument } from './schemas/user.schema';
 import { SearchUserDto } from '@user/dto/search-user.dto';
+import { MusicTrackDto } from '@user/dto/music-track.dto';
 
 @Injectable()
 export class UserRepository {
@@ -246,6 +247,33 @@ export class UserRepository {
       );
     }
     return new ForbiddenException('Access denied');
+  }
+
+  async toggleMusicTrack(
+    musicTrack: MusicTrackDto,
+    userId: string,
+  ): Promise<User> {
+    const user = await this.userModel.findOne({ userId });
+
+    return !user.playlist.find((track) => track.id === musicTrack.id)
+      ? this.userModel.findOneAndUpdate(
+          { userId },
+          {
+            $push: {
+              playlist: musicTrack,
+            },
+          },
+        )
+      : this.userModel.findOneAndUpdate(
+          { userId },
+          {
+            $pull: {
+              playlist: {
+                id: musicTrack.id,
+              },
+            },
+          },
+        );
   }
 
   async cancelFriendRequest(requestFriendId, id, userId) {

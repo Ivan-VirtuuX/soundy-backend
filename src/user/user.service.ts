@@ -7,6 +7,7 @@ import { User } from './schemas/user.schema';
 import { v4 as uuidv4 } from 'uuid';
 import mongoose from 'mongoose';
 import { SearchUserDto } from '@user/dto/search-user.dto';
+import { MusicTrackDto } from '@user/dto/music-track.dto';
 
 @Injectable()
 export class UserService {
@@ -24,6 +25,7 @@ export class UserService {
       birthDate: dto.birthDate,
       friends: [],
       friendRequests: [],
+      playlist: [],
       createdAt: new Date(),
     });
   }
@@ -73,6 +75,10 @@ export class UserService {
       id,
       requestFriendId,
     );
+  }
+
+  async toggleMusicTrack(musicTrack: MusicTrackDto, { id }): Promise<User> {
+    return await this.repository.toggleMusicTrack(musicTrack, id);
   }
 
   async cancelFriendRequest(requestFriendId: string, { id }, userId: string) {
