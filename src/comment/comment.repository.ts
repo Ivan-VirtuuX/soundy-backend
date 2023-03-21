@@ -27,7 +27,7 @@ export class CommentRepository {
   async addCommentLike(commentId: string, postId: string, _id: Types.ObjectId) {
     const comments = await this.commentModel.find({ postId })    
     
-    return !comments.find((comment: any) => comment.likes.find((like) => _id.equals(like.author._id))) ? this.commentModel.findOneAndUpdate(
+    return this.commentModel.findOneAndUpdate(
       { commentId },
       {
         $push: {
@@ -37,7 +37,7 @@ export class CommentRepository {
           },
         },
       },
-    ) : new ForbiddenException('Duplicate error');
+    );
   }
 
   async removeCommentLike(commentId: string, likeId: string) {
