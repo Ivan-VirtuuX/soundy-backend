@@ -40,6 +40,7 @@ export class PostRepository {
         .populate('comments.author', '', this.userModel)
         .populate('pinned.author', '', this.userModel)
         .populate('likes.author', '', this.userModel)
+        .populate({ path: 'likes.author' })
         .exec();
     else if (_limit > 0 && _page > 1)
       return await this.postModel
@@ -49,7 +50,7 @@ export class PostRepository {
         .populate('author', '', this.userModel)
         .populate('comments.author', '', this.userModel)
         .populate('pinned.author', '', this.userModel)
-        .populate('likes.author', '', this.userModel)
+        .populate({ path: 'likes.author' })
         .exec();
     else
       return await this.postModel
@@ -57,7 +58,7 @@ export class PostRepository {
         .populate('author', '', this.userModel)
         .populate('comments.author', '', this.userModel)
         .populate('pinned.author', '', this.userModel)
-        .populate('likes.author', '', this.userModel)
+        .populate({ path: 'likes.author' })
         .exec();
   }
 
