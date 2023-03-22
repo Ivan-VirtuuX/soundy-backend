@@ -1,4 +1,4 @@
-import { Injectable, ForbiddenException } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Comment, CommentDocument } from './schemas/comment.schema';
@@ -25,19 +25,23 @@ export class CommentRepository {
     return newComment.save();
   }
   async addCommentLike(commentId: string, postId: string, _id: Types.ObjectId) {
-    const comments = await this.commentModel.find({ postId })    
-    
-    return this.commentModel.findOneAndUpdate(
-      { commentId },
-      {
-        $push: {
-          likes: {
-            likeId: uuidv4(),
-            author: _id,
+    const comments = await this.commentModel.find({ postId });
+
+    return !comments.find((comment) =>
+      comment.likes.find((like: any) => _id.equals(like.author)),
+    )
+      ? this.commentModel.findOneAndUpdate(
+          { commentId },
+          {
+            $push: {
+              likes: {
+                likeId: uuidv4(),
+                author: _id,
+              },
+            },
           },
-        },
-      },
-    );
+        )
+      : new ForbiddenException('Duplicate error');
   }
 
   async removeCommentLike(commentId: string, likeId: string) {

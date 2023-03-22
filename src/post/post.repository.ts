@@ -140,6 +140,7 @@ export class PostRepository {
     return await this.commentModel
       .find({ postId })
       .populate('author', '', this.userModel)
+      .populate('likes.author', '', this.userModel)
       .exec();
   }
 
