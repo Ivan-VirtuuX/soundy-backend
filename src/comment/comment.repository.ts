@@ -27,9 +27,11 @@ export class CommentRepository {
   async addCommentLike(commentId: string, postId: string, _id: Types.ObjectId) {
     const comments = await this.commentModel.find({ postId });
 
-    return !comments.find((comment) =>
-      comment.likes.find((like: any) => _id.equals(like.author)),
-    )
+    return comments.find((comment) => comment.commentId === commentId).likes
+      .length === 0 ||
+      !comments.find((comment) =>
+        comment.likes.find((like: any) => _id.equals(like.author)),
+      )
       ? this.commentModel.findOneAndUpdate(
           { commentId },
           {

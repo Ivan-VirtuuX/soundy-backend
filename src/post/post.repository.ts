@@ -37,10 +37,7 @@ export class PostRepository {
         .find()
         .limit(_limit)
         .populate('author', '', this.userModel)
-        .populate('comments.author', '', this.userModel)
-        .populate('pinned.author', '', this.userModel)
         .populate('likes.author', '', this.userModel)
-        .populate({ path: 'likes.author' })
         .exec();
     else if (_limit > 0 && _page > 1)
       return await this.postModel
@@ -48,17 +45,13 @@ export class PostRepository {
         .skip(_limit * (_page - 1))
         .limit(_limit)
         .populate('author', '', this.userModel)
-        .populate('comments.author', '', this.userModel)
-        .populate('pinned.author', '', this.userModel)
-        .populate({ path: 'likes.author' })
+        .populate('likes.author', '', this.userModel)
         .exec();
     else
       return await this.postModel
         .find()
         .populate('author', '', this.userModel)
-        .populate('comments.author', '', this.userModel)
-        .populate('pinned.author', '', this.userModel)
-        .populate({ path: 'likes.author' })
+        .populate('likes.author', '', this.userModel)
         .exec();
   }
 
@@ -117,6 +110,7 @@ export class PostRepository {
         .populate('author', '', this.userModel)
         .populate('comments.author', '', this.userModel)
         .populate('pinned.author', '', this.userModel)
+        .populate('likes.author', '', this.userModel)
         .exec();
     else if (_limit > 0 && _page > 1)
       return await this.postModel
@@ -126,6 +120,7 @@ export class PostRepository {
         .populate('author', '', this.userModel)
         .populate('comments.author', '', this.userModel)
         .populate('pinned.author', '', this.userModel)
+        .populate('likes.author', '', this.userModel)
         .exec();
     else
       return await this.postModel
@@ -133,6 +128,7 @@ export class PostRepository {
         .populate('author', '', this.userModel)
         .populate('comments.author', '', this.userModel)
         .populate('pinned.author', '', this.userModel)
+        .populate('likes.author', '', this.userModel)
         .exec();
   }
 
