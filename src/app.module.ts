@@ -5,6 +5,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { PostModule } from './post/post.module';
 import { CommentModule } from './comment/comment.module';
+import { GatewayModule } from './gateway/gateway.module';
+import { ConversationModule } from './conversation/conversation.module';
+import { MessageModule } from './message/message.module';
 
 @Module({
   imports: [
@@ -14,6 +17,9 @@ import { CommentModule } from './comment/comment.module';
     AuthModule,
     PostModule,
     CommentModule,
+    GatewayModule,
+    ConversationModule,
+    MessageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
