@@ -43,8 +43,8 @@ export class ConversationRepository {
 
     return conversations.filter((conversation) => {
       return (
-        String(conversation.sender._id) === String(user._id) ||
-        String(conversation.receiver._id) === String(user._id)
+        conversation.sender._id.equals(user._id) ||
+        conversation.receiver._id.equals(user._id)
       );
     });
   }

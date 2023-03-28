@@ -34,15 +34,11 @@ export class MessengerGateway
 
   @SubscribeMessage('message')
   async handleMessage(@MessageBody() message: string) {
-    console.log(message);
-
     this.server.emit('message', message);
   }
 
   @OnEvent('message.create')
   async handleMessageCreateEvent(payload: any) {
-    console.log(payload);
-
     this.server.emit('onMessage', payload);
   }
 
