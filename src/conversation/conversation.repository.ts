@@ -25,9 +25,9 @@ export class ConversationRepository {
     return await newConversation.save();
   }
 
-  async findMessages(): Promise<Message[]> {
+  async findMessages(conversationId: string): Promise<Message[]> {
     const messages = await this.messageModel
-      .find()
+      .find({ conversationId })
       .populate('sender', '', this.userModel)
       .exec();
 
