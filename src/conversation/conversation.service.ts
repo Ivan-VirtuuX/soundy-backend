@@ -51,8 +51,8 @@ export class ConversationService {
     return await this.conversationRepository.findAll(user);
   }
 
-  async findMessages() {
-    return await this.conversationRepository.findMessages();
+  async findMessages(conversationId: string) {
+    return await this.conversationRepository.findMessages(conversationId);
   }
 
   async findOne(conversationId: string) {
