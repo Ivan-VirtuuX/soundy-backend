@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
+import { MessageContent } from './message-content.schema';
 
 export type MessageDocument = Message & Document;
 
@@ -15,7 +16,7 @@ export class Message {
   sender: mongoose.Types.ObjectId;
 
   @Prop()
-  text: string;
+  content: MessageContent;
 
   @Prop()
   createdAt: Date;

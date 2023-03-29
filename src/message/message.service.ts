@@ -12,7 +12,10 @@ export class MessageService {
       messageId: dto.messageId,
       conversationId: dto.conversationId,
       sender: sender._id,
-      text: dto.text,
+      content: {
+        text: dto.content.text,
+        imageUrl: dto.content.imageUrl,
+      },
       createdAt: new Date(),
     });
   }
