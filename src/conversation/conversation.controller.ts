@@ -35,8 +35,8 @@ export class ConversationController {
   }
 
   @Get(':id/messages')
-  findMessages() {
-    return this.conversationService.findMessages();
+  findMessages(@Param('id') id: string) {
+    return this.conversationService.findMessages(id);
   }
 
   @Delete(':id')
