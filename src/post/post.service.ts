@@ -16,10 +16,6 @@ export class PostService {
 
   constructor(private readonly repository: PostRepository) {}
 
-  async removeComment(commentId: string, postId: string) {
-    return await this.repository.removeComment(commentId, postId);
-  }
-
   async findAllPostsComments(): Promise<Comment[]> {
     return await this.repository.findAllPostsComments();
   }

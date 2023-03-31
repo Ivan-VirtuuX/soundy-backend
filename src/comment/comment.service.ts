@@ -14,6 +14,10 @@ export class CommentService {
     private readonly userService: UserService,
   ) {}
 
+  async removeComment(commentId: string) {
+    return await this.repository.removeComment(commentId);
+  }
+
   async addComment(dto: AddCommentDto, { id }) {
     const author: User = await this.userService.findById(id);
 

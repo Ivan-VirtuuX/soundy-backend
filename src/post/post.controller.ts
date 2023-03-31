@@ -100,10 +100,4 @@ export class PostController {
   delete(@Body() { postId }: { postId: string }) {
     return this.postService.delete(postId);
   }
-
-  @UseGuards(JwtAuthGuard)
-  @Delete(':id/comments')
-  removeComment(@Param('id') postId: string, @Body() commentId: string) {
-    return this.postService.removeComment(commentId, postId);
-  }
 }

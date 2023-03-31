@@ -227,24 +227,6 @@ export class PostRepository {
     );
   }
 
-  async removeComment(commentId, postId: string) {
-    const posts = await this.postModel.find();
-
-    const currPostId = posts.find((post) => post.postId === postId)._id;
-
-    await this.postModel.findByIdAndUpdate(
-      currPostId,
-      {
-        $pull: {
-          comments: { commentId: commentId.commentId },
-        },
-      },
-      { new: true },
-    );
-
-    return { message: 'Comment deleted' };
-  }
-
   async addView(postId: string, userId: string) {
     const user = await this.userModel.findOne({ userId });
 

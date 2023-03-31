@@ -24,6 +24,11 @@ export class CommentRepository {
 
     return newComment.save();
   }
+
+  async removeComment(commentId: string) {
+    await this.commentModel.findOneAndDelete({ commentId });
+  }
+
   async addCommentLike(commentId: string, postId: string, _id: Types.ObjectId) {
     const comments = await this.commentModel.find({ postId });
 

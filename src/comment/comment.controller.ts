@@ -40,4 +40,10 @@ export class CommentController {
   ): Promise<Comment> {
     return this.commentService.removeCommentLike(commentId, likeId);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete()
+  removeComment(@Body() { commentId }: { commentId: string }) {
+    return this.commentService.removeComment(commentId);
+  }
 }
