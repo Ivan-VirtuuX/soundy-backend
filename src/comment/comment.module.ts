@@ -7,6 +7,7 @@ import { CommentService } from './comment.service';
 import { CommentRepository } from './comment.repository';
 import { Post, PostSchema } from '../post/schemas/post.schema';
 import { UserModule } from '@user/user.module';
+import { PostRepository } from '../post/post.repository';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { UserModule } from '@user/user.module';
     forwardRef(() => UserModule),
   ],
   controllers: [CommentController],
-  providers: [CommentService, CommentRepository],
+  providers: [CommentService, CommentRepository, PostRepository],
   exports: [CommentService],
 })
 export class CommentModule {}

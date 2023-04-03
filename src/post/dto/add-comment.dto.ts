@@ -1,7 +1,5 @@
 export class AddCommentDto {
-  text: string;
-
-  author: string;
+  content: { text: string; images: string[] };
 
   postId: string;
 }

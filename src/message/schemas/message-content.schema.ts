@@ -9,7 +9,7 @@ export class MessageContent {
   text: string;
 
   @Prop()
-  imageUrl: string;
+  images: string[];
 }
 
 export const MessageSchema = SchemaFactory.createForClass(MessageContent);

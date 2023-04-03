@@ -4,6 +4,7 @@ import { AddCommentDto } from '../post/dto/add-comment.dto';
 import { UserService } from '@user/user.service';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from '@user/schemas/user.schema';
+import { PostRepository } from '../post/post.repository';
 
 @Injectable()
 export class CommentService {
@@ -12,6 +13,9 @@ export class CommentService {
 
     @Inject(UserService)
     private readonly userService: UserService,
+
+    @Inject(PostRepository)
+    private readonly postRepository: PostRepository,
   ) {}
 
   async removeComment(commentId: string) {
@@ -25,22 +29,21 @@ export class CommentService {
 
     const commentId = uuidv4();
 
-    return await this.repository.create({
+    const comment = {
       commentId,
       postId: dto.postId,
-      text: dto.text,
-      createdAt: createdAt,
-      author: {
-        _id: author._id,
-        userId: author.userId,
-        login: author.login,
-        name: author.name,
-        surname: author.surname,
-        birthDate: author.birthDate,
-        avatarUrl: author.avatarUrl,
+      content: {
+        text: dto.content.text,
+        images: dto.content.images,
       },
+      createdAt: createdAt,
+      author: author._id,
       likes: [],
-    });
+    };
+
+    await this.postRepository.addComment(comment);
+
+    return await this.repository.create(comment);
   }
 
   async addCommentLike(commentId: string, postId: string, { id }) {

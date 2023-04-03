@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { User, UserDocument } from '@user/schemas/user.schema';
 import { AddLikeDto } from './dto/add-like.dto';
 import { Comment, CommentDocument } from '../comment/schemas/comment.schema';
+import { AddCommentDto } from './dto/add-comment.dto';
 
 @Injectable()
 export class PostRepository {
@@ -38,6 +39,7 @@ export class PostRepository {
         .limit(_limit)
         .populate('author', '', this.userModel)
         .populate('likes.author', '', this.userModel)
+        .populate('comments.author', '', this.userModel)
         .exec();
     else if (_limit > 0 && _page > 1)
       return await this.postModel
@@ -46,12 +48,14 @@ export class PostRepository {
         .limit(_limit)
         .populate('author', '', this.userModel)
         .populate('likes.author', '', this.userModel)
+        .populate('comments.author', '', this.userModel)
         .exec();
     else
       return await this.postModel
         .find()
         .populate('author', '', this.userModel)
         .populate('likes.author', '', this.userModel)
+        .populate('comments.author', '', this.userModel)
         .exec();
   }
 
@@ -70,6 +74,7 @@ export class PostRepository {
           })
           .limit(_limit)
           .populate('author', '', this.userModel)
+          .populate('comments.author', '', this.userModel)
           .exec();
       } else if (_limit > 0 && _page > 1) {
         return this.postModel
@@ -81,6 +86,7 @@ export class PostRepository {
           .skip(_limit * (_page - 1))
           .limit(_limit)
           .populate('author', '', this.userModel)
+          .populate('comments.author', '', this.userModel)
           .exec();
       } else
         return this.postModel
@@ -90,6 +96,7 @@ export class PostRepository {
             },
           })
           .populate('author', '', this.userModel)
+          .populate('comments.author', '', this.userModel)
           .exec();
     }
   }
@@ -111,6 +118,7 @@ export class PostRepository {
         .populate('comments.author', '', this.userModel)
         .populate('pinned.author', '', this.userModel)
         .populate('likes.author', '', this.userModel)
+        .populate('comments.author', '', this.userModel)
         .exec();
     else if (_limit > 0 && _page > 1)
       return await this.postModel
@@ -121,6 +129,7 @@ export class PostRepository {
         .populate('comments.author', '', this.userModel)
         .populate('pinned.author', '', this.userModel)
         .populate('likes.author', '', this.userModel)
+        .populate('comments.author', '', this.userModel)
         .exec();
     else
       return await this.postModel
@@ -129,6 +138,7 @@ export class PostRepository {
         .populate('comments.author', '', this.userModel)
         .populate('pinned.author', '', this.userModel)
         .populate('likes.author', '', this.userModel)
+        .populate('comments.author', '', this.userModel)
         .exec();
   }
 
@@ -243,5 +253,16 @@ export class PostRepository {
           },
         )
       : new ForbiddenException('Duplicate error');
+  }
+
+  async addComment(dto: AddCommentDto) {
+    return await this.postModel.findOneAndUpdate(
+      { postId: dto.postId },
+      {
+        $push: {
+          comments: dto,
+        },
+      },
+    );
   }
 }

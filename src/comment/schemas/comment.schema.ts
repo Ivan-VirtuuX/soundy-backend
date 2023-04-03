@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { User } from '@user/schemas/user.schema';
+import { MessageContent } from '../../message/schemas/message-content.schema';
 
 export type CommentDocument = Comment & Document;
 
@@ -16,7 +17,7 @@ export class Comment {
   commentId: string;
 
   @Prop()
-  text: string;
+  content: MessageContent;
 
   @Prop()
   likes: User[];

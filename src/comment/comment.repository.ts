@@ -22,7 +22,9 @@ export class CommentRepository {
   async create(comment) {
     const newComment = await new this.commentModel(comment);
 
-    return newComment.save();
+    await newComment.populate('author', '', this.userModel);
+
+    return await newComment.save();
   }
 
   async removeComment(commentId: string) {

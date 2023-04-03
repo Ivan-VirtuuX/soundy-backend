@@ -14,7 +14,7 @@ export class MessageService {
       sender: sender._id,
       content: {
         text: dto.content.text,
-        imageUrl: dto.content.imageUrl,
+        images: dto.content.images,
       },
       createdAt: new Date(),
     });
