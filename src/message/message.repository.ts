@@ -26,7 +26,11 @@ export class MessageRepository {
 
     await this.conversationModel.findOneAndUpdate(
       { conversationId: message.conversationId },
-      { $set: { updatedAt: new Date() } },
+      {
+        $push: {
+          messages: newMessage,
+        },
+      },
     );
 
     return await newMessage.save();
@@ -40,6 +44,17 @@ export class MessageRepository {
   }
 
   async remove(messageId: string) {
-    return await this.messageModel.deleteOne({ messageId: messageId });
+    const { conversationId } = await this.messageModel.findOne({ messageId });
+
+    await this.conversationModel.findOneAndUpdate(
+      { conversationId },
+      {
+        $pull: {
+          messages: { messageId },
+        },
+      },
+    );
+
+    return this.messageModel.deleteOne({ messageId: messageId });
   }
 }

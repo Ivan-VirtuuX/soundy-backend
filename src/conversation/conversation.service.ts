@@ -1,10 +1,5 @@
 import { ConversationRepository } from './conversation.repository';
-import {
-  ForbiddenException,
-  forwardRef,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreateConversationDto } from './dto/create-conversation.dto';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from '@user/schemas/user.schema';
@@ -29,19 +24,22 @@ export class ConversationService {
       sender,
     );
 
-    if (
-      conversations.some(
-        (conversation) =>
-          conversation.receiver.userId === dto.receiver ||
-          conversation.sender.userId === dto.receiver,
-      )
-    ) {
-      throw new ForbiddenException('This conversation exists');
+    const conversation = conversations.find(
+      (conversation) =>
+        conversation.receiver.userId === dto.receiver ||
+        conversation.sender.userId === dto.receiver,
+    );
+
+    if (conversation) {
+      return {
+        conversationId: conversation.conversationId,
+      };
     }
     return await this.conversationRepository.create({
       sender: sender._id,
       receiver: receiverObjId,
       conversationId: uuidv4(),
+      messages: [],
       createdAt: new Date(),
       updatedAt: new Date(),
     });
