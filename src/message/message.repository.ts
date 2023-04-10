@@ -27,6 +27,15 @@ export class MessageRepository {
     await this.conversationModel.findOneAndUpdate(
       { conversationId: message.conversationId },
       {
+        $set: {
+          updatedAt: new Date(),
+        },
+      },
+    );
+
+    await this.conversationModel.findOneAndUpdate(
+      { conversationId: message.conversationId },
+      {
         $push: {
           messages: newMessage,
         },
