@@ -56,6 +56,7 @@ export class ConversationRepository {
       })
       .populate('sender', '', this.userModel)
       .populate('receiver', '', this.userModel)
+      .populate('messages.sender', '', this.userModel)
       .exec();
   }
 
