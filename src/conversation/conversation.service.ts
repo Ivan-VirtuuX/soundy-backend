@@ -49,15 +49,18 @@ export class ConversationService {
     return await this.conversationRepository.findAll(user);
   }
 
-  async findMessages(conversationId: string) {
-    return await this.conversationRepository.findMessages(conversationId);
+  async findMessages(conversationId: string, { userId }: { userId: string }) {
+    return await this.conversationRepository.findMessages(
+      conversationId,
+      userId,
+    );
   }
 
-  async findOne(conversationId: string) {
-    return await this.conversationRepository.findOne(conversationId);
+  async findOne(conversationId: string, { userId }: { userId: string }) {
+    return await this.conversationRepository.findOne(conversationId, userId);
   }
 
-  async remove(conversationId: string) {
-    return await this.conversationRepository.remove(conversationId);
+  async remove(conversationId: string, { userId }: { userId: string }) {
+    return await this.conversationRepository.remove(conversationId, userId);
   }
 }

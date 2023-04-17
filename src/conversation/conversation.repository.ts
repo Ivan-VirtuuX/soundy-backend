@@ -2,7 +2,7 @@ import {
   Conversation,
   ConversationDocument,
 } from './schemas/conversation.schema';
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Message, MessageDocument } from '../message/schemas/message.schema';
@@ -25,13 +25,23 @@ export class ConversationRepository {
     return await newConversation.save();
   }
 
-  async findMessages(conversationId: string): Promise<Message[]> {
-    const messages = await this.messageModel
-      .find({ conversationId })
+  async findMessages(
+    conversationId: string,
+    userId: string,
+  ): Promise<Message[] | ForbiddenException> {
+    const conversation: any = await this.conversationModel
+      .findOne({ conversationId })
       .populate('sender', '', this.userModel)
+      .populate('receiver', '', this.userModel)
       .exec();
 
-    return messages;
+    return conversation.sender.userId === userId ||
+      conversation.receiver.userId === userId
+      ? await this.messageModel
+          .find({ conversationId })
+          .populate('sender', '', this.userModel)
+          .exec()
+      : new ForbiddenException('Access denied');
   }
 
   async findAll(user: User): Promise<Conversation[]> {
@@ -49,8 +59,8 @@ export class ConversationRepository {
     });
   }
 
-  async findOne(conversationId: string) {
-    return await this.conversationModel
+  async findOne(conversationId: string, userId: string) {
+    const conversation: any = await this.conversationModel
       .findOne({
         conversationId: conversationId,
       })
@@ -58,15 +68,32 @@ export class ConversationRepository {
       .populate('receiver', '', this.userModel)
       .populate('messages.sender', '', this.userModel)
       .exec();
+
+    return conversation.sender.userId === userId ||
+      conversation.receiver.userId === userId
+      ? conversation
+      : new ForbiddenException('Access denied');
   }
 
-  async remove(conversationId: string) {
-    await this.messageModel
-      .find({})
-      .deleteMany({ conversationId: conversationId });
+  async remove(conversationId: string, userId: string) {
+    const conversation: any = await this.conversationModel
+      .findOne({ conversationId })
+      .populate('sender', '', this.userModel)
+      .populate('receiver', '', this.userModel)
+      .exec();
 
-    return await this.conversationModel.deleteOne({
-      conversationId: conversationId,
-    });
+    if (
+      conversation.sender.userId === userId ||
+      conversation.receiver.userId === userId
+    ) {
+      await this.messageModel
+        .find({})
+        .deleteMany({ conversationId: conversationId });
+
+      await this.conversationModel.deleteOne({
+        conversationId: conversationId,
+      });
+    }
+    return new ForbiddenException('Access denied');
   }
 }

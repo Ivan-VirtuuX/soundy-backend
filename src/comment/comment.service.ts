@@ -59,8 +59,4 @@ export class CommentService {
   async findAll() {
     return this.repository.findAll();
   }
-
-  async remove(messageId: string) {
-    return this.repository.remove(messageId);
-  }
 }

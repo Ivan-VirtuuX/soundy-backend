@@ -256,7 +256,7 @@ export class PostRepository {
   }
 
   async addComment(dto: AddCommentDto) {
-    return await this.postModel.findOneAndUpdate(
+    return this.postModel.findOneAndUpdate(
       { postId: dto.postId },
       {
         $push: {

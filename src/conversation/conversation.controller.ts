@@ -30,17 +30,19 @@ export class ConversationController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') conversationId: string) {
-    return this.conversationService.findOne(conversationId);
+  findOne(@Param('id') conversationId: string, @Request() req) {
+    return this.conversationService.findOne(conversationId, req.user);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id/messages')
-  findMessages(@Param('id') id: string) {
-    return this.conversationService.findMessages(id);
+  findMessages(@Param('id') id: string, @Request() req) {
+    return this.conversationService.findMessages(id, req.user);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') conversationId: string) {
-    return this.conversationService.remove(conversationId);
+  remove(@Param('id') conversationId: string, @Request() req) {
+    return this.conversationService.remove(conversationId, req.user);
   }
 }
