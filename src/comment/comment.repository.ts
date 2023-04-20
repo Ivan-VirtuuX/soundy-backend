@@ -34,23 +34,28 @@ export class CommentRepository {
   async addCommentLike(commentId: string, postId: string, _id: Types.ObjectId) {
     const comments = await this.commentModel.find({ postId });
 
-    return comments.find((comment) => comment.commentId === commentId).likes
-      .length === 0 ||
+    const like = { likeId: uuidv4(), author: _id };
+
+    if (
+      comments.find((comment) => comment.commentId === commentId).likes
+        .length === 0 ||
       !comments.find((comment) =>
         comment.likes.find((like: any) => _id.equals(like.author)),
       )
-      ? this.commentModel.findOneAndUpdate(
-          { commentId },
-          {
-            $push: {
-              likes: {
-                likeId: uuidv4(),
-                author: _id,
-              },
+    ) {
+      await this.commentModel.findOneAndUpdate(
+        { commentId },
+        {
+          $push: {
+            likes: {
+              ...like,
             },
           },
-        )
-      : new ForbiddenException('Duplicate error');
+        },
+      );
+      return like;
+    }
+    return new ForbiddenException('Duplicate error');
   }
 
   async removeCommentLike(commentId: string, likeId: string) {
