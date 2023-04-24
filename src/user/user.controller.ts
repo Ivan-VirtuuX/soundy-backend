@@ -131,6 +131,6 @@ export class UserController {
     @Request() req,
     @Body() { avatarUrl }: { avatarUrl: string },
   ) {
-    return this.userService.updateAvatar(req.user.id, avatarUrl);
+    return this.userService.updateAvatar(req.user.userId, avatarUrl);
   }
 }

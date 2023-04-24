@@ -77,16 +77,16 @@ export class PostService {
     return this.repository.delete(postId);
   }
 
-  async addLike(dto: AddLikeDto, postId: string, { id }) {
-    const { _id }: any = await this.userService.findById(id);
+  async addLike(dto: AddLikeDto, postId: string, { userId }) {
+    const { _id }: any = await this.userService.findById(userId);
 
     return await this.repository.addLike(dto, postId, _id);
   }
 
-  async togglePin(postId: string, { id }) {
-    const { userId }: any = await this.userService.findById(id);
+  async togglePin(postId: string, { userId }) {
+    const user: User = await this.userService.findById(userId);
 
-    return await this.repository.togglePin(postId, userId);
+    return await this.repository.togglePin(postId, user.userId);
   }
 
   async removeLike(postId: string, likeId: string) {
@@ -101,7 +101,7 @@ export class PostService {
     return await this.repository.findOne(_id);
   }
 
-  async addView(postId: string, { id }) {
-    return await this.repository.addView(postId, id);
+  async addView(postId: string, { userId }) {
+    return await this.repository.addView(postId, userId);
   }
 }

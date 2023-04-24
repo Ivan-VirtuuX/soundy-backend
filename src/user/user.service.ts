@@ -57,8 +57,8 @@ export class UserService {
     return await this.repository.changeUserData(userId, dto);
   }
 
-  async addFriendRequests(userId: string, { id }) {
-    return await this.repository.addFriendRequests(userId, id);
+  async addFriendRequests(id: string, { userId }) {
+    return await this.repository.addFriendRequests(id, userId);
   }
 
   async getFriendRequests(userId: string): Promise<User[]> {
@@ -69,23 +69,23 @@ export class UserService {
     return await this.repository.getFriends(userId);
   }
 
-  async confirmFriendRequest(userId: string, { id }, requestFriendId: string) {
+  async confirmFriendRequest(id: string, { userId }, requestFriendId: string) {
     return await this.repository.confirmFriendRequest(
-      userId,
       id,
+      userId,
       requestFriendId,
     );
   }
 
-  async toggleMusicTrack(musicTrack: MusicTrackDto, { id }): Promise<User> {
-    return await this.repository.toggleMusicTrack(musicTrack, id);
+  async toggleMusicTrack(musicTrack: MusicTrackDto, { userId }): Promise<User> {
+    return await this.repository.toggleMusicTrack(musicTrack, userId);
   }
 
-  async cancelFriendRequest(requestFriendId: string, { id }, userId: string) {
+  async cancelFriendRequest(requestFriendId: string, { userId }, id: string) {
     return await this.repository.cancelFriendRequest(
       requestFriendId,
-      id,
       userId,
+      id,
     );
   }
 

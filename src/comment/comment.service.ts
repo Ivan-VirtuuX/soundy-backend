@@ -22,8 +22,8 @@ export class CommentService {
     return await this.repository.removeComment(commentId);
   }
 
-  async addComment(dto: AddCommentDto, { id }) {
-    const author: User = await this.userService.findById(id);
+  async addComment(dto: AddCommentDto, { userId }) {
+    const author: User = await this.userService.findById(userId);
 
     const createdAt = new Date();
 
@@ -46,8 +46,8 @@ export class CommentService {
     return await this.repository.create(comment);
   }
 
-  async addCommentLike(commentId: string, postId: string, { id }) {
-    const { _id }: any = await this.userService.findById(id);
+  async addCommentLike(commentId: string, postId: string, { userId }) {
+    const { _id }: any = await this.userService.findById(userId);
 
     return await this.repository.addCommentLike(commentId, postId, _id);
   }

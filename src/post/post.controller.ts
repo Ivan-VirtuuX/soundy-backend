@@ -67,7 +67,7 @@ export class PostController {
     @Body() createPostDto: CreatePostDto,
     @Request() req,
   ): Promise<PostSchema> {
-    return this.postService.create(createPostDto, req.user.id);
+    return this.postService.create(createPostDto, req.user.userId);
   }
 
   @UseGuards(JwtAuthGuard)
