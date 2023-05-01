@@ -43,7 +43,7 @@ export class CommentController {
 
   @UseGuards(JwtAuthGuard)
   @Delete()
-  removeComment(@Body() { commentId }: { commentId: string }) {
-    return this.commentService.removeComment(commentId);
+  removeComment(@Body() { commentId }: { commentId: string }, @Request() req) {
+    return this.commentService.removeComment(commentId, req.user);
   }
 }

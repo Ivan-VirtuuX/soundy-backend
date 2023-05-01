@@ -18,8 +18,8 @@ export class CommentService {
     private readonly postRepository: PostRepository,
   ) {}
 
-  async removeComment(commentId: string) {
-    return await this.repository.removeComment(commentId);
+  async removeComment(commentId: string, { userId }: { userId: string }) {
+    return await this.repository.removeComment(commentId, userId);
   }
 
   async addComment(dto: AddCommentDto, { userId }) {

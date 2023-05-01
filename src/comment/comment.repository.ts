@@ -27,8 +27,14 @@ export class CommentRepository {
     return await newComment.save();
   }
 
-  async removeComment(commentId: string) {
-    await this.commentModel.findOneAndDelete({ commentId });
+  async removeComment(commentId: string, userId: string) {
+    const comment = await this.commentModel
+      .findOne({ commentId })
+      .populate('author', '', this.userModel);
+
+    if (comment.author.userId === userId) {
+      await this.commentModel.findOneAndDelete({ commentId });
+    }
   }
 
   async addCommentLike(commentId: string, postId: string, _id: Types.ObjectId) {
