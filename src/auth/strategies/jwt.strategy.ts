@@ -32,6 +32,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       birthDate: user.birthDate,
       avatarUrl: user.avatarUrl,
       createdAt: user.createdAt,
+      friendRequests: user.friendRequests,
     };
   }
 }

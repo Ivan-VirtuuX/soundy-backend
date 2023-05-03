@@ -133,7 +133,10 @@ export class UserRepository {
   }
 
   async findOneBy(cond: LoginUserDto): Promise<User> {
-    return this.userModel.findOne(cond);
+    return this.userModel
+      .findOne(cond)
+      .populate('friendRequests', '', this.userModel)
+      .exec();
   }
 
   async changeUserData(
@@ -237,7 +240,7 @@ export class UserRepository {
         },
       );
 
-      return this.userModel.updateOne(
+      await this.userModel.updateOne(
         { userId },
         {
           $pull: {
@@ -245,6 +248,8 @@ export class UserRepository {
           },
         },
       );
+
+      return user;
     }
     return new ForbiddenException('Access denied');
   }
