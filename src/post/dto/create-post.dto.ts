@@ -10,7 +10,6 @@ export interface OutputBlockData {
 export class CreatePostDto {
   @IsArray()
   body: OutputBlockData[];
-  views: User[];
   likes: User[];
   pinned: false;
   id: string;

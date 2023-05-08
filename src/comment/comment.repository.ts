@@ -81,8 +81,4 @@ export class CommentRepository {
   async findAll() {
     return this.commentModel.find();
   }
-
-  async remove(commentId: string) {
-    return this.commentModel.deleteOne({ commentId: commentId });
-  }
 }

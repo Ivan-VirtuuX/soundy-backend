@@ -1,7 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-
-export type MessageDocument = MessageContent & Document;
+import { Prop, Schema } from '@nestjs/mongoose';
 
 @Schema()
 export class MessageContent {
@@ -11,5 +8,3 @@ export class MessageContent {
   @Prop()
   images: string[];
 }
-
-export const MessageSchema = SchemaFactory.createForClass(MessageContent);
