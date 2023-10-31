@@ -57,7 +57,7 @@ export class UserService {
     return await this.repository.changeUserData(userId, dto);
   }
 
-  async addFriendRequests(id: string, { userId }) {
+  async addFriendRequests(id: string, { userId }): Promise<any> {
     return await this.repository.addFriendRequests(id, userId);
   }
 

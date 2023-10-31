@@ -52,7 +52,7 @@ export class MessageRepository {
       .exec();
   }
 
-  async remove(messageId: string) {
+  async remove(messageId: string): Promise<any> {
     const { conversationId } = await this.messageModel.findOne({ messageId });
 
     await this.conversationModel.findOneAndUpdate(

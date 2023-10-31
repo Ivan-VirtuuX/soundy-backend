@@ -24,7 +24,7 @@ export class MessageService {
     return this.repository.findAll();
   }
 
-  async remove(messageId: string) {
+  async remove(messageId: string): Promise<any> {
     return this.repository.remove(messageId);
   }
 }

@@ -97,7 +97,7 @@ export class PostController {
 
   @UseGuards(JwtAuthGuard)
   @Delete()
-  delete(@Body() { postId }: { postId: string }) {
+  delete(@Body() { postId }: { postId: string }): Promise<any> {
     return this.postService.delete(postId);
   }
 }

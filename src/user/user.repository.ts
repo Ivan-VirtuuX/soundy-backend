@@ -159,7 +159,10 @@ export class UserRepository {
     return { name, surname, birthDate };
   }
 
-  async addFriendRequests(userId: string, requestFriendId: string) {
+  async addFriendRequests(
+    userId: string,
+    requestFriendId: string,
+  ): Promise<any> {
     const users = await this.userModel
       .find()
       .populate('friendRequests', '', this.userModel)

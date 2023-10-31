@@ -156,7 +156,7 @@ export class PostRepository {
     return newPost.save();
   }
 
-  async delete(postId: string) {
+  async delete(postId: string): Promise<any> {
     await this.commentModel.deleteMany({ postId });
 
     return this.postModel.deleteOne({ postId: postId });

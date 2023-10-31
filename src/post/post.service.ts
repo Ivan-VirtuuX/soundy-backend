@@ -73,7 +73,7 @@ export class PostService {
     return await this.repository.getUserPosts(_limit, _page, userId);
   }
 
-  async delete(postId: string) {
+  async delete(postId: string): Promise<any> {
     return this.repository.delete(postId);
   }
 

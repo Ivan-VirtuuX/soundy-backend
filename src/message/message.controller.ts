@@ -34,7 +34,7 @@ export class MessageController {
   }
 
   @Delete(':id')
-  remove(@Param('id') messageId: string) {
+  remove(@Param('id') messageId: string): Promise<any> {
     this.eventEmitter.emit('message.delete', messageId);
 
     return this.messageService.remove(messageId);

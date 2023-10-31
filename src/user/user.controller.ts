@@ -58,7 +58,10 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Post(':id/friend-requests')
-  async addFriendRequests(@Param('id') userId: string, @Request() req) {
+  async addFriendRequests(
+    @Param('id') userId: string,
+    @Request() req,
+  ): Promise<any> {
     return this.userService.addFriendRequests(userId, req.user);
   }
 
